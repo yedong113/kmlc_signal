@@ -1,0 +1,30 @@
+
+þ
+ITSCRealData.proto"C
+CrossRealStatus
+CrossID (RcrossID
+Status (Rstatus"¢
+ITSCRealData
+Id (	Rid
+Time (	Rtime
+CtrlMode (RctrlMode
+PeriodID (RperiodID
+PlanID (RplanID
+	StepTotal (R	stepTotal
+StepNow (RstepNow(
+StepSurplusTime (RstepSurplusTime
+StepLen	 (RstepLen
+	CycleTime
+ (R	cycleTime
+	GPSStatus (R	gPSStatus
+Lng (Rlng
+Lat (Rlat
+BigDoor (RbigDoor
+	SmallDoor (R	smallDoor"
+RightConMode (RrightConMode
+RStepNow (RrStepNow*
+RStepSurplusTime (RrStepSurplusTime
+CrossNum (RcrossNum:
+CrossStatusInfo (2.CrossRealStatusRcrossStatusInfo"
+MaxGreenTime (RmaxGreenTime"
+MinGreenTime (RminGreenTime

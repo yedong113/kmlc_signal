@@ -1,0 +1,9 @@
+{
+  "name": "tongan_signal",
+  "version": "0.0.0",
+  "description": "tongan_signal",
+  "main": "app.js",
+  "author": {
+    "name": "yedong"
+  }
+}

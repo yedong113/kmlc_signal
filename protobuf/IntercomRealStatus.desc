@@ -1,0 +1,9 @@
+
+Ã
+IntercomRealStatus.proto"¦
+IntercomRealStatus
+Id (	Rid
+Time (	Rtime*
+SwitchCenterName (	RswitchCenterName(
+BaseStationName (	RbaseStationName
+Status (Rstatus

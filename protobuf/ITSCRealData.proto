@@ -1,0 +1,30 @@
+
+message CrossRealStatus {
+    required int32 CrossID = 1;
+    required int32 Status = 2;
+}
+
+message ITSCRealData {
+    required string Id = 1;
+    required string Time = 2;
+    required int32 CtrlMode = 3;
+    optional int32 PeriodID = 4;
+    optional int32 PlanID = 5;
+    optional int32 StepTotal = 6;
+    optional int32 StepNow = 7;
+    optional int32 StepSurplusTime = 8;
+    optional int32 StepLen = 9;
+    optional int32 CycleTime = 10;
+    optional int32 GPSStatus = 11;
+    optional float Lng = 12;
+    optional float Lat = 13;
+    optional int32 BigDoor = 14;
+    optional int32 SmallDoor = 15;
+    optional int32 RightConMode = 16;
+    optional int32 RStepNow = 17;
+    optional int32 RStepSurplusTime = 18;
+    optional int32 CrossNum = 19;
+    repeated CrossRealStatus CrossStatusInfo = 20;
+    optional int32 MaxGreenTime = 21;
+    optional int32 MinGreenTime = 22;
+}
