@@ -8,7 +8,7 @@ var config = {
         database:'trafficcenter'
 	},
 	reportPara:{
-        kafkaHost:'kafka01:19092,kafka02:19092,kafka03:19092',
+        kafkaHost:'node3:9092',
 		topic:"ITSCRealData",
         RealTrafficFlowTopic:'ITSCRealTrafficFlow',
         RealLaneQueueTopic:'ITSCRealLaneQueue'

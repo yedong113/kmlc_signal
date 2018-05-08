@@ -115,7 +115,7 @@ function kmlc_itsc(option_) {
         setInterval(function(){
             _this.keepAlive();
         },10000);
-        _this.getConerTable();
+        //_this.getConerTable();
     });
 
     _this.clientSocket.on("error", function(data) {
@@ -267,7 +267,7 @@ kmlc_itsc.prototype.parseObjsBody = function(operCode, objsBody, msgType) {
                     err.errCode = objsBody[0]*256+lowErrorcode;
                     err.info=errorConfig[err.errCode];
                 }
-                objsRes = this.parseDetail(err, msgType, objsBody, this.parseF1, this.fsm.onSetStageTableReq); //4
+                objsRes = this.parseDetail(err, msgType, objsBody, this.parseF1, this.fsm.onSetConnerReq); //4
 
             }
             break;
@@ -290,7 +290,6 @@ kmlc_itsc.prototype.parseObjsBody = function(operCode, objsBody, msgType) {
             break;
         case 0xCA://路口信息
         {
-            this.parseCA(objsBody);
             if(err.errCode!=0){
                 err.errCode = objsBody[0]*256+lowErrorcode;
                 err.info=errorConfig[err.errCode];
@@ -1725,16 +1724,17 @@ kmlc_itsc.prototype.parseCA = function (objsBody) {
     var _this = this;
     console.log(objsBody);
     var connerCnt = objsBody[0];
-    console.log(connerCnt);
+    var ConnerData = [];
     var startIndex = 1;
     for (var i = 0; i < connerCnt; i++) {
         var rowBuf = objsBody.slice(startIndex, startIndex + 20);
-        console.log(rowBuf)
         var conner = rowBuf[0];
-        var connerName = rowBuf.slice(1,19);
-        console.log(connerName.toString())
+        var buffer_name=rowBuf.slice(1,20);
+        var connerName = buffer_name.slice(0,buffer_name.indexOf(0x00)).toString('utf-8');
         startIndex += 20;
+        ConnerData.push({Corner:conner,Name:connerName});
     }
+    return ConnerData;
 }
 
 
@@ -2836,6 +2836,7 @@ kmlc_itsc.prototype.queryParamer = function (data, cb) {
         }
 
         queryParamerResult.RingConfig=ringConfigArr;
+        queryParamerResult.ConnerTable=_this.fsm.paramerConfigure.connerTable;
 
 
         //console.log(JSON.stringify(queryParamerResult));

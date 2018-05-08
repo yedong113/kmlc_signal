@@ -103,12 +103,14 @@ function SettingPatternTable(data) {
 }
 
 function createCornerTableData(data) {
-    var tmp = '';
-    console.log('createPatternTableData item',data.Corner,data.Name);
-    tmp = tmp + toolFunc.valueToHEX(data.Corner, 1);
-    var buffer=new buffer(data.name,'utf-8');
-    var buff_name = new buffer(20);
-    return tmp;
+    console.log('createCornerTableData item',data.Corner,data.Name);
+    var buffer=new Buffer(20);
+    var buff_name = new Buffer(data.Name,'utf-8');
+    buffer[0]=data.Corner;
+    for(var iix=1;iix<20;iix++){
+        buffer[iix]=buff_name[iix-1];
+    }
+    return buffer.toString('hex');
 }
 
 
@@ -116,6 +118,7 @@ function SettingConnerTable(data) {
     var result = '';
     var counter=0;
     for(var iix=0;iix<data.length;iix++){
+        result += createCornerTableData(data[iix]);
         counter++;
     }
     result = '2181ca00' + toolFunc.valueToHEX(counter, 1) + result;
