@@ -26,7 +26,7 @@ kmlc_server.prototype.start = function() {
     var _this = this;
 
     thenjs(function(cont) {
-            _this.getDeviceInformationListLocal(function() {
+            _this.getDeviceInformationList(function() {
                 cont(null, null);
             });
         })
@@ -197,7 +197,7 @@ kmlc_server.prototype.add_task_contrl_batch = function (data,callback) {
 
 kmlc_server.prototype.query_task_paramer = function (data,callback) {
     /*数据从此处进行分发，分发到相应的设备对象中去*/
-    console.log('-----call the add_task_contrl function--------');
+    console.log('-----call the query_task_paramer function--------');
     var devContain = false;
     for (var iix = 0; iix < this.deviceObject.length; iix++) {
         if (data.Id == this.deviceObject[iix].deviceId) {
@@ -409,6 +409,7 @@ kmlc_server.prototype.getDeviceInformationListLocal = function (cb) {
         tmp.url = 'kmlc://192.168.12.201:6666';
         tmp.deviceId = 5303260169;
         tmp.deviceType = 211;
+        _this.deviceIdList.push(tmp.deviceId);
         _this.deviceList.push(tmp);
     }
     {

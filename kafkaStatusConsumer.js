@@ -18,7 +18,7 @@ var pb = new protobuf(fs.readFileSync("./protobuf/ITSCRealData.desc"));
 
 var consumer = new Kafka.KafkaConsumer({
   //'debug': 'all',
-  'metadata.broker.list': 'localhost:9092',
+  'metadata.broker.list': 'node3:9092',
   'group.id': 'kafka',
   'enable.auto.commit': false
 });

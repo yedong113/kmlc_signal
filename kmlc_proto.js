@@ -1449,7 +1449,8 @@ kmlc_itsc.prototype.parse8E = function(objsBody) {
 
     var SchemeInfo = {};
     var startIndex = 2;
-    console.log(objsBody);
+    var periodCnt = 0;
+
     for (var i = 0; i < PeriodTableCount; ++i) {
         var PeriodEventInfo = [];
         var PeriodTable = {};
@@ -1539,13 +1540,13 @@ kmlc_itsc.prototype.parseC1 = function(objsBody) {
             Stage.Delta = rowBuf[12]; /* 弹性延长时间 */
             Stage.MinGreen = rowBuf[13]; /* 最小绿灯时间 */
             Stage.MaxGreen = rowBuf[14]; /* 最大绿灯时间 */
-            if(tmpStageTableID!=0)
-            {
-                StagesInfo[j] = Stage;
-            }
+        if(tmpStageTableID!=0)
+        {
+            StagesInfo[j] = Stage;
         }
-        StageTable.StagesInfo = StagesInfo;
-        StageTableInfo[i] = StageTable;
+    }
+    StageTable.StagesInfo = StagesInfo;
+    StageTableInfo[i] = StageTable;
     }return StageTableInfo;
 }
 
@@ -1844,187 +1845,6 @@ kmlc_itsc.prototype.queryData = function() {
     }, 5 * 1000);
 }
 
-
-
-
-/**
- *
- * @param {*} data
- * @param {*} cb
- */
-kmlc_itsc.prototype.configParameterBatch = function(data, cb) {
-    var _this = this;
-    this.setCb = cb;
-    var DeviceId = data.Id;
-    _this.fsm.command='configParameter';
-    console.log('*************V1 is********************');
-    var ScheduleTable = []; /*时基表*/
-    var PeriodTable = []; /*时段表*/
-    var SchemeTable = []; /*方案表*/
-    var StageTable = []; /*阶段表*/
-    var PhaseTable = []; /*相位表*/
-    var PeriodTimeTable = [];
-    var ChannelTable = [];
-    PhaseTable = data.PhaseTable;
-    //ChannelTable = data.ChannelTable;
-    SchemeTable = data.SchemeTable;
-    PeriodTimeTable = data.PeriodTimeTable;
-    ScheduleTable = data.ScheduleTable;
-
-    for(var i=0;i<PhaseTable.length;i++){
-        PhaseTable[i].ConflictPhase=0;
-        _this.getkmlcChannelCfg(PhaseTable[i].Cornor,PhaseTable[i].LaneType,function (res) {
-            if(res){
-                PhaseTable[i].Channel = res.channelId;
-                PhaseTable[i].kmlcPhaseId = res.phaseId;
-                PhaseTable[i].name = res.name;
-            }
-        });
-    }
-
-    for (var iix = 0; iix < SchemeTable.length; iix++) {
-        var stageTableId = SchemeTable[iix].StageTableId;
-        for (var iiy = 0; iiy < SchemeTable[iix].StageData.length; iiy++) {
-            console.log(SchemeTable[iix].StageData[iiy].PhaseBitmap.toString(2));
-            genkmlcPhaseBitmap(SchemeTable[iix].StageData[iiy].PhaseBitmap, PhaseTable, function (res) {
-                SchemeTable[iix].StageData[iiy].lcPhaseBitmap=res;
-            });
-        }
-    }
-
-
-    var controlMode={};
-    for (var i=1;i<=16;i++){
-        controlMode[i]=0;
-    }
-    for(var i=0;i<SchemeTable.length;i++){
-        SchemeTable[i].Cycle = SchemeTable[i].RecycleTime;
-        SchemeTable[i].Offset = SchemeTable[i].Offset;
-        SchemeTable[i].SchemeId=SchemeTable[i].StageTabelId;
-        SchemeTable[i].StageTableId=SchemeTable[i].StageTabelId;
-        if(SchemeTable[i].Coordphase==1){//是无缆协调
-            controlMode[SchemeTable[i].SchemeId]=0x0a;
-        }
-        else
-        {
-            controlMode[SchemeTable[i].SchemeId]=0;
-        }
-        console.log(SchemeTable[i]);
-    }
-    for (var iix = 0; iix < PeriodTimeTable.length; iix++) {
-        var id = PeriodTimeTable[iix].TimeIntervalTableId;
-        for (var iiy = 0; iiy < PeriodTimeTable[iix].TimeIntervalInfo.length; iiy++) {
-
-            var SchemeTabelId = PeriodTimeTable[iix].TimeIntervalInfo[iiy].SchemeTabelId;
-            PeriodTimeTable[iix].TimeIntervalInfo[iiy].SchemeTableId=SchemeTabelId;
-            PeriodTimeTable[iix].TimeIntervalInfo[iiy].ControlModel=controlMode[SchemeTabelId];
-        }
-    }
-
-    var scheduleTable = [];
-
-    for (var iix = 0; iix < ScheduleTable.length; iix++) {
-        var tmp=ScheduleTable[iix];
-        var defaultSchedule={};//
-        defaultSchedule.PlanId=tmp.PlaneId;
-        defaultSchedule.Month=0b1111111111110;
-        defaultSchedule.Day=0b11111110;
-        defaultSchedule.Date=0b11111111111111111111111111111110;
-        defaultSchedule.PeriodId=tmp.Week.Mon;
-        scheduleTable.push(defaultSchedule);
-        for (var iiy = 0; iiy < ScheduleTable[iix].SpecialDayTable.length; iiy++) {
-            var tmp1=ScheduleTable[iix].SpecialDayTable[iiy];
-            var scheduleItem={};
-            scheduleItem.PlanId=iiy+2;
-            scheduleItem.Month=tmp1.Month;
-            scheduleItem.Day=0;
-            scheduleItem.Date=tmp1.Day;
-            scheduleItem.PeriodId=tmp1.PeriodTableId;
-            scheduleTable.push(scheduleItem);
-        }
-    }
-
-    console.log('1111111111111');
-
-    var deviceIdBuf=genKmlcProtoBuff.SettingDeviceID(DeviceId)
-    console.log(deviceIdBuf);
-    console.log('1111111111112');
-
-    var stageBuf = genKmlcProtoBuff.SettingStageTables(SchemeTable);
-    console.log(stageBuf);
-    console.log('1111111111113');
-
-    var patternBuf = genKmlcProtoBuff.SettingPatternTable(SchemeTable);
-    console.log(patternBuf);
-
-
-    var periodBuf = genKmlcProtoBuff.SettingPeriodTable(PeriodTimeTable);
-    console.log(periodBuf);
-
-
-    var scheduleBuf = genKmlcProtoBuff.SettingScheduleTable(scheduleTable);
-    console.log(scheduleBuf);
-
-
-    this.fsm.onReadySet = function(event, from, to) {
-        console.log('onReadySet');
-        _this.StartSettingParammer(); //DC --1
-    }
-
-    this.fsm.onSetDeviceIdReq = function(event, from, to) {
-        console.log('onSetDeviceIdReq');
-        return _this.sendData(deviceIdBuf);
-    }
-
-    this.fsm.onSetScheduleReq = function(event, from, to) {
-        console.log('onSetScheduleReq');
-        //_this.SettingScheduleTableV1(ScheduleTable); //8D--5
-        return _this.sendData(scheduleBuf);
-    }
-
-    this.fsm.onSetPeriodTableReq = function(event, from, to) {
-        console.log('onSetPeriodTableReq');
-        return _this.sendData(periodBuf);
-    }
-    this.fsm.onSetPatternTableReq = function(event, from, to) {
-        console.log('onSetPatternTableReq');
-        return _this.sendData(patternBuf);
-    }
-    this.fsm.onSetStageTableReq = function(event, from, to) {
-        console.log('onSetStageTableReq');
-        return _this.sendData(stageBuf);
-    }
-    this.fsm.onSetPhaseTabelReq = function(event, from, to) {
-        console.log('onSetPhaseTabelReq')
-        _this.SettingPhaseTabel(PhaseTable); //95--13
-    }
-    this.fsm.onEndSet = function(event, from, to) {
-        console.log('onEndSet');
-        _this.makeSureSetting(); //DD--15
-    }
-
-
-    //this.fsm.onReadySet();
-    if (!this.deviceStatus) {
-        setTimeout(function() {
-            if (!_this.deviceStatus) {
-                var err = {
-                    errCode: 0x02,
-                    msg: "can't connect to itsc"
-                };
-                _this.setCb(err);
-            } else {
-                _this.fsm.onReadySet();
-            }
-        }, 1000 * 3);
-    } else {
-        this.fsm.onReadySet();
-    }
-}
-
-
-
-
 /**
  *
  * @param {*} data
@@ -2047,7 +1867,7 @@ kmlc_itsc.prototype.configParameterV1 = function(data, cb) {
         return;
     }
 
-    var ConnerTable = [];
+    var CornerTable = [];
     var ScheduleTable = []; /*时基表*/
     var PeriodTable = []; /*时段表*/
     var SchemeTable = []; /*方案表*/
@@ -2055,7 +1875,7 @@ kmlc_itsc.prototype.configParameterV1 = function(data, cb) {
     var PhaseTable = []; /*相位表*/
     var PeriodTimeTable = [];
     var ChannelTable = [];
-    ConnerTable = data.ConnerTable;
+    CornerTable = data.CornerTable;
     PhaseTable = data.PhaseTable;
     //ChannelTable = data.ChannelTable;
     SchemeTable = data.SchemeTable;
@@ -2084,23 +1904,21 @@ kmlc_itsc.prototype.configParameterV1 = function(data, cb) {
         var err = {
             errCode: 0x05,
             Id: DeviceId,
-            info: "时基表未配置"
+            info: "时基表未配置 ScheduleTable"
         };
         this.setCb(err);
         return;
     }
 
-    if(ConnerTable==null || ConnerTable.length==0){
+    if(CornerTable==null || CornerTable.length==0){
         var err = {
             errCode: 0x06,
             Id: DeviceId,
-            info: "路口表未配置"
+            info: "路口表未配置 CornerTable"
         };
         this.setCb(err);
         return;
     }
-
-
 
     var controlMode={};
     for (var i=1;i<=16;i++){
@@ -2172,8 +1990,8 @@ kmlc_itsc.prototype.configParameterV1 = function(data, cb) {
     console.log(scheduleBuf);
 
 
-    var connerBuf = genKmlcProtoBuff.SettingConnerTable(ConnerTable);
-    console.log(connerBuf);
+    var cornerBuf = genKmlcProtoBuff.SettingConnerTable(CornerTable);
+    console.log(cornerBuf);
 
 
     this.fsm.onReadySet = function(event, from, to) {
@@ -2183,7 +2001,7 @@ kmlc_itsc.prototype.configParameterV1 = function(data, cb) {
 
     this.fsm.onSetConnerReq = function(event, from, to) {
         console.log('onSetConnerReq');
-        return _this.sendData(connerBuf);
+        return _this.sendData(cornerBuf);
     }
 
     this.fsm.onSetDeviceIdReq = function(event, from, to) {
@@ -2836,7 +2654,7 @@ kmlc_itsc.prototype.queryParamer = function (data, cb) {
         }
 
         queryParamerResult.RingConfig=ringConfigArr;
-        queryParamerResult.ConnerTable=_this.fsm.paramerConfigure.connerTable;
+        queryParamerResult.CornerTable=_this.fsm.paramerConfigure.connerTable;
 
 
         //console.log(JSON.stringify(queryParamerResult));

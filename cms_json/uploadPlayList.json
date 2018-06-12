@@ -1,0 +1,47 @@
+{
+  "status": 1,
+  "data": {
+    "CmsCtrlId": "102001104124205411004.cms.ctrl",
+    "Id": "102001104124205411004",
+    "Playlist": {
+      "Infos": [{
+        "Delay": "5",
+        "InStyle": 4,
+        "OutStyle": 1,
+        "Speed": "5",
+        "Texts": [{
+          "Font": 1,
+          "HFont": 32,
+          "Color": 2,
+          "Text": "进入隧道，减速慢行！",
+          "X": 0,
+          "Y": 0
+        }]
+      },
+        {
+          "Delay": "3",
+          "InStyle": 5,
+          "OutStyle": 1,
+          "Speed": "5",
+          "Texts": [{
+            "Font": 1,
+            "HFont": 32,
+            "Color": 2,
+            "Text": "进入隧道，减速慢行！",
+            "X": 0,
+            "Y": 0
+          },{
+            "Font": 1,
+            "HFont": 32,
+            "Color": 2,
+            "Text": "进入隧道，减速慢行！!!!!",
+            "X": 0,
+            "Y": 0
+          }]
+        }],
+      "PlayNo": 0
+    },
+    "PlayNo": 0
+  },
+  "msg": "信息发送成功"
+}

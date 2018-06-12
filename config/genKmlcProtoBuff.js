@@ -133,6 +133,17 @@ function SettingStageTables(data) {
     var m = data.length;
     var n = 0;
     var counter = 0;
+    var maxStageCnt = 0;
+    for (var iix = 0; iix < data.length; iix++) {
+        var stageTableId = data[iix].StageTableId;
+        var localStageCnt = 0;
+        for (var iiy = 0; iiy < data[iix].StageData.length; iiy++) {
+            localStageCnt++;
+        }
+        if (localStageCnt > maxStageCnt) {
+            maxStageCnt = localStageCnt;
+        }
+    }
     for (var iix = 0; iix < data.length; iix++) {
         var stageTableId = data[iix].StageTableId;
         for (var iiy = 0; iiy < data[iix].StageData.length; iiy++) {
@@ -149,12 +160,31 @@ function SettingStageTables(data) {
             tmp.Delta = data[iix].StageData[iiy].Delta;
             tmp.MinGreen = data[iix].StageData[iiy].MinGreen;
             tmp.MaxGreen = data[iix].StageData[iiy].MaxGreen;
-            tmp.lcPhaseBitmap=data[iix].StageData[iiy].lcPhaseBitmap;
+            tmp.lcPhaseBitmap = data[iix].StageData[iiy].lcPhaseBitmap;
             counter = counter + 1;
             result = result + createStageTableData(tmp);
         }
+        if (maxStageCnt > data[iix].StageData.length) {
+            for (var iix = 0; iix < maxStageCnt - data[iix].StageData.length; iix++) {
+                var tmp = {};
+                tmp.stageTableId = 0;
+                tmp.stageId = 0;
+                tmp.PhaseBitmap = 0;
+                tmp.Green = 0;
+                tmp.GreenFlash = 0;
+                tmp.Yellow = 0;
+                tmp.Red = 0;
+                tmp.WalkLight = 0;
+                tmp.WalkFlash = 0;
+                tmp.Delta = 0;
+                tmp.MinGreen = 0;
+                tmp.MaxGreen = 0;
+                tmp.lcPhaseBitmap = 0;
+                counter = counter + 1;
+                result = result + createStageTableData(tmp);
+            }
+        }
     }
-    console.log(result);
     if (counter == 0) {
         return;
     }

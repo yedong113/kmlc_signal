@@ -1,0 +1,25 @@
+{
+  "status": 1,
+  "data": [
+    {
+      "deviceCode": "102001104124205411004",
+      "name": "右洞洞内可变情报板2",
+      "cmstype": "411",
+      "lng": null,
+      "lat": null,
+      "location": "102001104124205",
+      "stakeNum": "K1+788",
+      "url": null,
+      "state": 1,
+      "site": null,
+      "direction": null,
+      "describe": null,
+      "width": 96,
+      "height": 48,
+      "maxText": 5,
+      "maxRecord": 5,
+      "manufacture": ""
+    }
+  ],
+  "msg": "获取情报板成功"
+}

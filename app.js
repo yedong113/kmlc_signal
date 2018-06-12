@@ -5,21 +5,61 @@ var http=require('http');
 var fs = require('fs');
 var os = require('os');
 var bodyParser = require('body-parser');
+var getCmsList = require('./cms_json/getCmsList.json')
+var uploadPlayList = require('./cms_json/uploadPlayList.json')
+var downloadPlayList = require('./cms_json/downloadPlaylist.json')
 
 var toolFunc = require('./commonTools.js');
 app.use(bodyParser.json({limit:"8mb"}));
 app.use(bodyParser.urlencoded({limit:"8mb",extended: false}));
 
 app.use(bodyParser.json());
-app.post('/light/paramer',function(req,res){
+app.get('/cms/getCmsList',function(req,res){
     var data={};
     data = req.body;
     console.log(data);
-    res.send({result:"success"});
+    res.send(getCmsList);
+
+});
+
+app.post('/cms/uploadPlayList',function(req,res){
+    var data={};
+    data = req.body;
+    console.log(JSON.stringify(data))
+    res.send(uploadPlayList);
+
+});
+
+app.delete('/cms/getCmsList',function(req,res){
+    var data={};
+    data = req.body;
+    console.log(JSON.stringify(data))
+    res.send(uploadPlayList);
+});
+
+
+app.put('/cms/getCmsList',function(req,res){
+    var data={};
+    data = req.body;
+    console.log(JSON.stringify(data))
+    res.send(uploadPlayList);
 
 });
 
 
+app.post('/cms/downloadPlayList',function(req,res){
+    var data={};
+    data = req.body;
+    console.log(data);
+    res.send(downloadPlayList);
+});
+
+
+JSON.stringify(uploadPlayList)
+
+console.log(JSON.stringify(uploadPlayList))
+
+/*
 
 var arrDeviceList = [5326000002,5326000003,5326212709,5326212710,5326212711,5326212758,5326212757,5326212759]
 console.log(arrDeviceList)
@@ -132,6 +172,7 @@ function makeSureSetting(first_argument) {
 makeSureSetting();
 
 
+*/
 
 
 
